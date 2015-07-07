@@ -47,16 +47,4 @@ class Controller extends BaseClass{
 			$this->__after();
 		}
 	}
-	/**
-	* render view
-	* 
-	* @param string
-	* @param array
-	* @param boolean
-	* @return mix
-	*/
-	public function view($name,$data = [],$return = false){
-		$prop = Loader::getName($name,'view');
-		require_once $prop->path;
-	}
 }

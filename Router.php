@@ -179,9 +179,9 @@ class Router extends BaseClass{
 			exit;
 		}
 		$controller_path = $this->app_path.$this->getConfig('controller_folder').DS;
-		
+
 		// Does the requested controller exist in the root folder?
-		if (file_exists($controller_path.ucfirst($segments[0]).'.php')){
+		if (file_exists($controller_path.ucfirst($segments[0]).$this->getConfig('class_surfix').'.php')){
 			return $segments;
 		}
 
@@ -195,7 +195,7 @@ class Router extends BaseClass{
 
 			if (count($segments) > 0){
 				// Does the requested controller exist in the sub-folder?
-				if ( ! file_exists($controller_path.$this->directory.$segments[0].'.php')){
+				if ( ! file_exists($controller_path.$this->directory.$segments[0].$this->getConfig('class_surfix').'.php')){
 					if ( ! $this->getConfig('404_override')){
 						$x = explode('/', $this->getConfig('404_override'));
 						$this->set_directory('');
@@ -296,7 +296,7 @@ class Router extends BaseClass{
 	*/
 	function setClass($class){
 		
-		$this->class = $class.$this->getConfig('class_surfix');
+		$this->class = ucfirst($class).$this->getConfig('class_surfix');
 	}
 	/**
 	 *  Set the directory name

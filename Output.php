@@ -15,6 +15,6 @@
  */
 namespace Sky\core;
 
-class Model extends BaseClass{
-
+class Output extends BaseClass{
+	
 }

@@ -6,7 +6,7 @@ Note: This repository contains the core code of the Sky framework. If you want t
 
 ##Sky PHP FrameWork
 Sky is development framework for PHP with a modern patterns and MVC* Structure.
-with Hi-speed performance and flexible, also simple and easy to develop for all user level is our priority.
+with speed performance and flexible and easy to develop for all user level is our priority.
 
 ##Official Documentation
 
