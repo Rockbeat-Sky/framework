@@ -16,5 +16,6 @@
 namespace Sky\core;
 
 class Model extends BaseClass{
-
+	public $tabel = '';
+	
 }

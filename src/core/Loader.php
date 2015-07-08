@@ -66,12 +66,19 @@ class Loader{
 		return self::$instance[$namespace] ;
 	}
 	/**
-	* set environtment path
-	* 
+	* set environment path
+	* if param not set or environment not set it will load from config Environment.php
+	*
+	* @param array
 	* @return void
 	*/
-	static function setEnvirontment(){
+	static function setEnvironment($data = []){
 	
+		if($data && is_array($data)){
+			self::$env = $data;
+			return;
+		}
+		
 		// Check environment is set?
 		if(count(self::$env ) == 0){
 			self::$env = (require APP_PATH.'config' . DS . 'Environment.php');
@@ -91,7 +98,7 @@ class Loader{
 			user_error('No Namespace');
 			exit;
 		}
-		self::setEnvirontment();
+		self::setEnvironment();
 		
 		// check environment have data?
 		if(count(self::$env) == 0){
@@ -117,17 +124,27 @@ class Loader{
 
 		$name = (object)[
 			'app' => $appname,
-			'namespace' => DS.$appname.DS.$p,
+			'namespace' => '\\'.$appname.'\\'.str_replace('/','\\',$p),
 			'class' => end($segments),
 			'path' => $path . $p. '.php',
 			'segments' => $segments
 		];
 		return $name;
 	}
+	/**
+	* add push instance class
+	* 
+	* @param object class
+	* @return void
+	*/
 	static function addInstance($object){
 		$name = str_replace(DS,'.',get_class($object));
 		self::$instance[$name] = $object;
 	}
+	/**
+	* This is for autoload sky
+	* dont use this if using autoloader from composer
+	*/
 	static function autoloadRegister(){
 		spl_autoload_register('self::load');
 	}
