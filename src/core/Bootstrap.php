@@ -19,14 +19,14 @@ $AutoLoad = require VENDOR_PATH . DS . 'autoload.php';
 | Add Register psr4 for Application folder
 |--------------------------------------------------------------------------
 */
-$AutoLoad->setPsr4('App\\', APP_PATH);
+//$AutoLoad->setPsr4('App\\', APP_PATH);
 
 /*
 |--------------------------------------------------------------------------
 | Add Register psr4 for Sky folder
 |--------------------------------------------------------------------------
 */
-$AutoLoad->setPsr4('Sky\\', VENDOR_PATH . 'sky' . DS);
+//$AutoLoad->setPsr4('Sky\\', VENDOR_PATH . 'sky' . DS . 'framework' . DS . 'src' . DS);
 
 /*
 |--------------------------------------------------------------------------

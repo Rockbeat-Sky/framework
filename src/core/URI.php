@@ -1,19 +1,21 @@
 <?php 
-namespace Sky\core;
-
-// ------------------------------------------------------------------------
-
-/**
- * URI Class
+ /**
+ * Sky Framework
  *
- * Parses URIs and determines routing
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
+ * Redistributions of files must retain the above copyright notice.
  *
- * @package		CodeIgniter
- * @subpackage	Libraries
- * @category	URI
- * @author		ExpressionEngine Dev Team
- * @link		http://codeigniter.com/user_guide/libraries/uri.html
+ * @package		Sky Framework
+ * @author		Hansen Wong
+ * @copyright	Copyright (c) 2015, Rockbeat.
+ * @license		http://www.opensource.org/licenses/mit-license.php MIT License
+ * @link		http://rockbeat.web.id
+ * @since		Version 1.0
  */
+namespace Sky\core;
+use Sky\core\Common;
+
 class URI extends BaseClass{
 	public $_config = [
 		'uri_protocol' => 'AUTO', // AUTO, REQUEST_URI, CLI
@@ -126,7 +128,7 @@ class URI extends BaseClass{
 	 */
 	function _set_uri_string($str){
 		// Filter out control characters
-		$str = remove_invisible_characters($str, FALSE);
+		$str = Common::removeInvisibleCharacters($str, FALSE);
 
 		// If the URI contains only a slash we'll kill it
 		$this->uri_string = ($str == '/') ? '' : $str;

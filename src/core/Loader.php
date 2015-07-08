@@ -74,7 +74,7 @@ class Loader{
 	
 		// Check environment is set?
 		if(count(self::$env ) == 0){
-			self::$env = (require APP_PATH.'\config\Environment.php');
+			self::$env = (require APP_PATH.'config' . DS . 'Environment.php');
 		}
 	}
 	/**

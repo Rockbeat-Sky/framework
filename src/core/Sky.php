@@ -23,7 +23,7 @@ define('SKY_VERSION','1.0.1-alpha');
 
 require __DIR__ . DS . 'Bootstrap.php';
 
-Loader::load('Sky.core.Common');
+//Loader::load('Sky.core.Common');
 /*
 |--------------------------------------------------------------------------
 | Load Config Base
