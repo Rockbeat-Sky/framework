@@ -40,7 +40,7 @@ class View extends BaseClass{
 		}
 		// extract array to variable
 		extract($_sky_var);
-		
+
 		ob_start();
 		
 		include $__prop->path;
@@ -48,11 +48,11 @@ class View extends BaseClass{
 		$__view = ob_get_contents();
 		
 		ob_end_clean();
-		
+
 		if($_sky_return){
 			return $__view;
 		}
-		
+
 		self::$temp .= $__view;
 	}
 	/**

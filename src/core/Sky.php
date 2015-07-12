@@ -18,12 +18,31 @@ use Sky\core\Loader;
 use Sky\core\Config;
 use Sky\core\Benchmark;
 use Sky\core\Router;
+use Sky\core\Log;
 
 define('SKY_VERSION','1.0.1-alpha');
 
+/*
+|--------------------------------------------------------------------------
+| Get Host Name
+|--------------------------------------------------------------------------
+*/
+if (isset($_SERVER['HTTP_HOST'])){
+	
+	$base_url = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off' ? 'https' : 'http';
+	$base_url .= '://'. $_SERVER['HTTP_HOST'];
+	$base_url .= str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
+	
+}
+else{
+	$base_url = 'http://localhost/';
+}
+
+define('HOST_NAME',$base_url);
+
 require __DIR__ . DS . 'Bootstrap.php';
 
-//Loader::load('Sky.core.Common');
+require_once __DIR__ . DS . 'Global.php';
 /*
 |--------------------------------------------------------------------------
 | Load Config Base
@@ -31,13 +50,19 @@ require __DIR__ . DS . 'Bootstrap.php';
 */
 Config::load('App.Base');
 
+date_default_timezone_set(Config::read('App.Base.default_timezone'));
+
+$LOG = Loader::getClass('Sky.core.Log');
+
+$LOG->write(100,'---------------Starting Processing -----------------------');
 /*
 |--------------------------------------------------------------------------
 | Starting System Benchmark
 |--------------------------------------------------------------------------
 */
+
 $BM = Loader::getClass('Sky.core.Benchmark');
-$BM->mark('start_system');
+$BM->mark('start_sky');
 /*
 |--------------------------------------------------------------------------
 | initialize prase URI and Router
@@ -47,6 +72,20 @@ $RTR = Loader::getClass('Sky.core.Router',Config::read('App.Routes'));
 
 $class  = ucfirst($RTR->class);
 $method = $RTR->method;
+
+$OUT = Loader::getClass('Sky.core.Output');
+
+if(Config::read('App.Base.enable_cache')){
+	
+	$CH = Loader::getClass('Sky.core.Cache');
+	if($CH_OUT = $CH->read(implode($RTR->segments,'.'))){
+		
+		$OUT->append(View::getTemp())->render();
+		$LOG->write(100,'Cache Rendered');
+		//exit;
+	}
+}
+
 
 /*
 |--------------------------------------------------------------------------
@@ -58,7 +97,7 @@ $BM->mark('start_controller');
 
 
 if(!file_exists($RTR->getPath())){
-	user_error('404 : '.$RTR->getPath());
+	Exceptions::show404();
 	exit;
 }
 
@@ -85,6 +124,7 @@ foreach($nsclass as $name){
 $SKY = new $class;
 if(!method_exists($SKY,'__init')){
 	user_error('Cant start controller');
+	$LOG->write(500,$class.' can not run missing method __init');
 }
 /*
 |--------------------------------------------------------------------------
@@ -103,11 +143,17 @@ if(method_exists($SKY,'_beforeView')){
 */
 
 $BM->mark('start_view');
-echo View::getTemp();
+
+Loader::getClass('Sky.core.Output')->append(View::getTemp())->render();
+
 $BM->mark('end_view');
 
 if(method_exists($SKY,'_afterView')){
 	$SKY->_afterView();
 }
 
-$BM->mark('end_controller');
+$BM->mark('end_sky');
+
+$elapsed = $BM->elapsedTime('start_sky', 'end_sky');
+
+$LOG->write(100,'Finish at : '.$elapsed.' | '.$BM->memoryUsage());

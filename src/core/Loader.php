@@ -116,9 +116,11 @@ class Loader{
 		$path = VENDOR_PATH;
 
 		if(isset(self::$env[$appname])){
-			$path = self::$env[$appname];
-			array_shift($segments);
+			$path = self::$env[$appname];	
 		}
+		
+		// remove first array
+		array_shift($segments);
 
 		$p = implode(DS,$segments);
 

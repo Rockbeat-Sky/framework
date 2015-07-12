@@ -14,7 +14,6 @@
  * @since		Version 1.0
  */
 namespace Sky\core;
-use Sky\core\Common;
 
 class URI extends BaseClass{
 	public $_config = [
@@ -128,7 +127,7 @@ class URI extends BaseClass{
 	 */
 	function _set_uri_string($str){
 		// Filter out control characters
-		$str = Common::removeInvisibleCharacters($str, FALSE);
+		$str = _removeInvisibleCharacters($str, FALSE);
 
 		// If the URI contains only a slash we'll kill it
 		$this->uri_string = ($str == '/') ? '' : $str;

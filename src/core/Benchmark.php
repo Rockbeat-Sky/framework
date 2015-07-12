@@ -74,22 +74,10 @@ class Benchmark{
 
 		return number_format(($em + $es) - ($sm + $ss), $decimals);
 	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Memory Usage
-	 *
-	 * This function returns the {memory_usage} pseudo-variable.
-	 * This permits it to be put it anywhere in a template
-	 * without the memory being calculated until the end.
-	 * The output class will swap the real value for this variable.
-	 *
-	 * @access	public
-	 * @return	string
-	 */
-	function memoryUsage(){
-		return '{memory_usage}';
-	}
-
+	
+	function MemoryUsage(){
+		$memory	 = ( ! function_exists('memory_get_usage')) ? '0' : round(memory_get_usage()/1024/1024, 2).'MB';
+		
+		return $memory;
+	} 
 }

@@ -233,7 +233,7 @@ class Router extends BaseClass{
 		}
 		
 		// Nothing else to do at this point but show a 404
-		user_error('Page Not Found 404');
+		Exceptions::Show404('Page Not Found 404');
 		//user_error($segments[0]);
 	}
 

@@ -16,6 +16,7 @@
 namespace Sky\core;
 
 class Controller extends BaseClass{
+
 	public $SKY;
 
 	/**
@@ -26,25 +27,34 @@ class Controller extends BaseClass{
 	* @return void
 	*/
 	public function __init($method,$params){
-		
+
 		$this->SKY = (object)[
 			'method' => $method,
 			'params' => $params
 		];
-		
+
 		// is class have method ?
 		if(!method_exists($this,$method)){
-			user_error('page not found '.$method);
-			exit;
+			
+			Loader::getClass('Sky.core.Log')->write(300,$method.' Page Not Found');
+			
+			Exceptions::show404();
 		}
+		
 		// run before controller if have?
 		if(method_exists($this,'__before')){
+		
 			$this->__before();
+			
 		}
+
 		call_user_func_array([$this,$method],$params);
+		
 		// run after controller if have?
 		if(method_exists($this,'__after')){
+		
 			$this->__after();
+			
 		}
 	}
 }

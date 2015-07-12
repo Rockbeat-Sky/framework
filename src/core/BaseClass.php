@@ -14,12 +14,16 @@
  * @since		Version 1.0
  */
 namespace Sky\core;
+use Sky\core\Log;
 
 class BaseClass{
 	public $_config = [];
 
 	public function __CONSTRUCT($config = []){
 		$this->setConfig($config);
+		
+		
+		Loader::getClass('Sky.core.Log')->write(100,get_class($this).' Class Loaded');
 	}
 	/**
 	* Set config class
