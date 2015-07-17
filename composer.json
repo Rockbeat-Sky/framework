@@ -12,7 +12,9 @@
 		}
 	],
 	"require": {
-		"php": ">=5.4.0"
+		"php": ">=5.4.0",
+		"monolog/monolog" : "~1.1",
+		"doctrine/orm" : "`~2.5"
 	},
 	"autoload": {
 		"psr-4": {"Sky\\": "src/"}

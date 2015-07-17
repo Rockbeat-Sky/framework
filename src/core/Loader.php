@@ -33,7 +33,7 @@ class Loader{
 			$ns = self::getName($namespace,$folder);
 			
 			if(!file_exists($ns->path)){
-				user_error('File '.$ns->path.' Not Found');
+				Exceptions::showError('Server Error','Missing File '.$ns->path.' Not Found');
 				exit;
 			}
 			
@@ -61,7 +61,7 @@ class Loader{
 		
 		$ns = self::getName($namespace);
 		
-		self::$instance[$namespace] = new $ns->namespace();
+		self::$instance[$namespace] = new $ns->namespace($config);
 		
 		return self::$instance[$namespace] ;
 	}

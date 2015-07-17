@@ -33,6 +33,14 @@ class Exceptions extends BaseClass{
 		ob_end_clean();
 		
 		echo  $buffer;
+		if(Config::read('App.Base.backtrace_print')){
+			echo '<pre>';
+			debug_print_backtrace();
+			echo '</pre>';
+		}
 		exit;
+	}
+	static function backtrace(){
+		
 	}
 }

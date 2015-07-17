@@ -132,3 +132,9 @@ function _setStatusHeader($code = 200, $text = ''){
 		header("HTTP/1.1 {$code} {$text}", TRUE, $code);
 	}
 }
+
+function _camelize($str){
+	$str = strtolower(trim($str));
+	$str = ucwords(preg_replace('/[\s_]+/', ' ', $str));
+	return str_replace(' ', '', $str);
+}

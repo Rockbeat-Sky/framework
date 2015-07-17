@@ -56,10 +56,7 @@ class Benchmark{
 	 * @param	integer	the number of decimal places
 	 * @return	mixed
 	 */
-	function elapsedTime($point1 = '', $point2 = '', $decimals = 4){
-		if ($point1 == ''){
-			return '{elapsed_time}';
-		}
+	function elapsedTime($point1, $point2 = '', $decimals = 4){
 
 		if ( ! isset(self::$marker[$point1])){
 			return '';
@@ -74,8 +71,16 @@ class Benchmark{
 
 		return number_format(($em + $es) - ($sm + $ss), $decimals);
 	}
+	function elapsedPoint($decimals = 4){
 	
+	}
+	/**
+	* get CPU Memory Usage
+	* 
+	* @return string
+	*/
 	function MemoryUsage(){
+	
 		$memory	 = ( ! function_exists('memory_get_usage')) ? '0' : round(memory_get_usage()/1024/1024, 2).'MB';
 		
 		return $memory;

@@ -57,4 +57,22 @@ class Controller extends BaseClass{
 			
 		}
 	}
+	/**
+	* Output controller
+	* 
+	* @param mix
+	* @return void
+	*/
+	public function __output($content){
+	
+		if(method_exists($this,'_beforeView')){
+			$this->_beforeView();
+		}
+		
+		Loader::getClass('Sky.core.Output')->append($content)->render();
+		
+		if(method_exists($this,'_afterView')){
+			$this->_afterView();
+		}
+	}
 }

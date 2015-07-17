@@ -70,14 +70,16 @@ class Router extends BaseClass{
 	public $app_path = APP_PATH;
 	 
 	function __construct($conf = []){
-		parent::__CONSTRUCT($conf);
+	
+		parent::__construct($conf);
+		
 		$this->uri = Loader::getClass('Sky.core.URI');
 		
 		$this->method = $this->getConfig('default_method');
 		$this->setClass($this->getConfig('default_controller'));
 		
 		if (!$this->class){
-			user_error("Unable to determine what should be displayed. A default route has not been specified in the routing file.");
+			Exceptions::showError("Server Error","Unable to determine what should be displayed. A default route has not been specified in the routing file.");
 			exit;
 		}
 		$this->_initialize();
@@ -113,7 +115,7 @@ class Router extends BaseClass{
 		
 		// Set Segments
 		$this->segments = $this->uri->segments;
-		
+
 		// Parse any custom routing that may exist
 		$this->_parseRoutes();
 
@@ -175,7 +177,7 @@ class Router extends BaseClass{
 	 */
 	function _validate_request($segments){
 		if (count($segments) == 0){
-			user_error('No Segments');
+			Exceptions::showError('Server Error','No Segments');
 			exit;
 		}
 		$controller_path = $this->app_path.$this->getConfig('controller_folder').DS;
@@ -231,10 +233,6 @@ class Router extends BaseClass{
 
 			return $segments;
 		}
-		
-		// Nothing else to do at this point but show a 404
-		Exceptions::Show404('Page Not Found 404');
-		//user_error($segments[0]);
 	}
 
 	// --------------------------------------------------------------------
@@ -253,11 +251,19 @@ class Router extends BaseClass{
 		$routes = $this->getConfig('map');
 		
 		$uri = implode('/',$this->segments);
-		
+
 		if(isset($routes[$this->uri->segments[0].'->vendor'])){
 			$this->app_path = VENDOR_PATH.$routes[$this->uri->segments[0].'->vendor'].DS;
 			array_shift($this->segments);
+			if(count($this->segments) == 0){
+				$this->segments = [
+					$this->getConfig('default_controller'),
+					$this->getConfig('default_method')
+				];
+			}
+			//return $this->_setRequest($this->segments);
 		}
+		
 		// Is there a literal match?  If so we're done
 		elseif (isset($routes[$uri])){
 			explode('/', $routes[$uri]);
@@ -284,6 +290,7 @@ class Router extends BaseClass{
 		}
 		// If we got this far it means we didn't encounter a
 		// matching route so we'll set the site default route
+
 		$this->_setRequest($this->segments);
 		
 	}

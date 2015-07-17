@@ -40,7 +40,7 @@ else{
 
 define('HOST_NAME',$base_url);
 
-require __DIR__ . DS . 'Bootstrap.php';
+require_once __DIR__ . DS . 'Bootstrap.php';
 
 require_once __DIR__ . DS . 'Global.php';
 /*
@@ -68,6 +68,8 @@ $BM->mark('start_sky');
 | initialize prase URI and Router
 |--------------------------------------------------------------------------
 */
+Config::load('App.Routes');
+
 $RTR = Loader::getClass('Sky.core.Router',Config::read('App.Routes'));
 
 $class  = ucfirst($RTR->class);
@@ -80,9 +82,9 @@ if(Config::read('App.Base.enable_cache')){
 	$CH = Loader::getClass('Sky.core.Cache');
 	if($CH_OUT = $CH->read(implode($RTR->segments,'.'))){
 		
-		$OUT->append(View::getTemp())->render();
+		$OUT->append(View::getTemp());
 		$LOG->write(100,'Cache Rendered');
-		//exit;
+		goto OUTPUT;
 	}
 }
 
@@ -97,8 +99,9 @@ $BM->mark('start_controller');
 
 
 if(!file_exists($RTR->getPath())){
+
 	Exceptions::show404();
-	exit;
+
 }
 
 $ns = DS.(require_once $RTR->getPath()).DS;
@@ -122,9 +125,13 @@ foreach($nsclass as $name){
 }
 
 $SKY = new $class;
-if(!method_exists($SKY,'__init')){
-	user_error('Cant start controller');
-	$LOG->write(500,$class.' can not run missing method __init');
+
+if(!method_exists($SKY,'__init') or !method_exists($SKY,'__output')){
+
+	$LOG->write(500,$class.' Missing Method __init or __output');
+	
+	Exceptions::showError('Server Error','Missing Method __init or __output');
+	
 }
 /*
 |--------------------------------------------------------------------------
@@ -133,27 +140,18 @@ if(!method_exists($SKY,'__init')){
 */
 $SKY->__init($method, array_slice($RTR->segments, 2));
 
-if(method_exists($SKY,'_beforeView')){
-	$SKY->_beforeView();
-}
+
 /*
 |--------------------------------------------------------------------------
-| Render Output
+| Render Output Controller
 |--------------------------------------------------------------------------
 */
-
-$BM->mark('start_view');
-
-Loader::getClass('Sky.core.Output')->append(View::getTemp())->render();
-
-$BM->mark('end_view');
-
-if(method_exists($SKY,'_afterView')){
-	$SKY->_afterView();
+OUTPUT:
+if(isset($SKY)){
+	$SKY->__output(View::getTemp());
 }
-
-$BM->mark('end_sky');
-
-$elapsed = $BM->elapsedTime('start_sky', 'end_sky');
-
-$LOG->write(100,'Finish at : '.$elapsed.' | '.$BM->memoryUsage());
+else{
+	$OUT->render();
+}
+// Banzai!!!!!
+$LOG->write(100,'*********** Completed at : '.$BM->elapsedTime('start_sky').' | '.$BM->memoryUsage().' ***********');
