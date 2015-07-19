@@ -6,19 +6,20 @@ use Sky\core\Exceptions;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
 
-class ORM extends BaseClass{
+class ORM {
+	public $entity;
 	function __construct(){
+
 		Config::load('App.DB');
-		$entityType = 'Create'.ucfirst(Config::read('App.DB.entity_type')).'MetadataConfiguration';
+		$entityType = 'Create'.ucfirst(Config::read('App.DB.entity.type')).'Configuration';
 		
 		if(!method_exists($setup = new Setup,$entityType)){
 			Exceptions::showError('Server Error','Invalid Entity Type use Annotation, XML or YAML');
 		}
 
-		$entityManager = EntityManager::create(
+		$this->entity = EntityManager::create(
 			Config::read('App.DB.connect'),
-			$setup->$entityType([APP_PATH],true)
+			$setup->$entityType(Config::read('App.DB.entity.path'),true)
 		);
-		print_r( \Doctrine\ORM\Tools\Console\ConsoleRunner::createHelperSet($entityManager));
 	}
 }
