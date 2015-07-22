@@ -19,11 +19,15 @@ use Sky\core\Log;
 class BaseClass{
 	public $_config = [];
 
-	public function __CONSTRUCT($config = []){
-		$this->setConfig($config);
+	public function __construct(){
+	
+		if(func_num_args() > 0){
+			$config = func_get_arg(0);
+
+			$this->setConfig($config);
+		}
+		Loader::getClass('Sky.core.Log')->write(100,get_class($this).' Class Initialize');
 		
-		
-		Loader::getClass('Sky.core.Log')->write(100,get_class($this).' Class Loaded');
 	}
 	/**
 	* Set config class
@@ -31,8 +35,15 @@ class BaseClass{
 	* @param string
 	* @return void
 	*/
-	public function setConfig($config){
-		$this->_config = array_merge($this->_config,$this->__init_config($config));
+	public function setConfig($key,$value = ''){
+		if(is_array($key)){
+			$this->_config = array_merge($this->_config,$key);
+		}
+		else{
+			$this->_config[$key] = $value;
+		}
+		$this->updateConfig();
+		
 		return $this;
 	}
 	/**
@@ -58,13 +69,16 @@ class BaseClass{
 	* @param array
 	* @return array
 	*/
-	protected function __init_config($config){
-		foreach($config as $name => $val){
-			$method = '__Apply'.ucfirst($name);
+	public function updateConfig(){
+	
+		foreach($this->_config as $name => $val){
+		
+			$method = '__Set'._camelize($name);
+			
 			if(method_exists($this,$method)){
-				$config[$name] = call_user_func(array($this,$method),$val);
+				$this->_config[$name] = call_user_func(array($this,$method),$val);
 			}
 		}
-		return $config;
+		return $this;
 	}
 }

@@ -26,7 +26,7 @@ function _removeInvisibleCharacters($str, $url_encoded = TRUE){
 * @param string | array
 * @return url
 */
-function _publicUrl($uri){
+function _publicUrl($uri = ''){
 	return HOST_NAME.Config::read('App.Base.public_folder').'/'.ltrim(_uriString($uri),'/');
 }
 /**
@@ -35,7 +35,7 @@ function _publicUrl($uri){
 * @param string | array
 * @return url
 */
-function _siteUrl($uri){
+function _siteUrl($uri = ''){
 	return HOST_NAME.ltrim(_uriString($uri),'/');
 }
 /**
@@ -131,4 +131,10 @@ function _setStatusHeader($code = 200, $text = ''){
 	else{
 		header("HTTP/1.1 {$code} {$text}", TRUE, $code);
 	}
+}
+
+function _camelize($str){
+	$str = strtolower(trim($str));
+	$str = ucwords(preg_replace('/[\s_]+/', ' ', $str));
+	return str_replace(' ', '', $str);
 }

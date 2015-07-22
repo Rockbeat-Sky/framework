@@ -37,14 +37,16 @@ class Log{
 			exit;
 			
 		}
-		
-		foreach(Config::read('App.Base.log_filename') as $level => $file){	
-		
-			if(in_array($level, Config::read('App.Base.enable_log'))){
+		if(is_array($log_file = Config::read('App.Base.log_filename'))){
 			
-				$this->log[$level] = new Logger($name);
+			foreach(Config::read('App.Base.log_filename') as $level => $file){	
+			
+				if(in_array($level, Config::read('App.Base.enable_log'))){
 				
-				$this->log[$level]->pushHandler(new StreamHandler($path.$date.' '.$file,$level));
+					$this->log[$level] = new Logger($name);
+					
+					$this->log[$level]->pushHandler(new StreamHandler($path.$date.' '.$file,$level));
+				}
 			}
 		}
 	}

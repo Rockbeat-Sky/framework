@@ -70,14 +70,16 @@ class Router extends BaseClass{
 	public $app_path = APP_PATH;
 	 
 	function __construct($conf = []){
-		parent::__CONSTRUCT($conf);
+	
+		parent::__construct($conf);
+		
 		$this->uri = Loader::getClass('Sky.core.URI');
 		
 		$this->method = $this->getConfig('default_method');
 		$this->setClass($this->getConfig('default_controller'));
 		
 		if (!$this->class){
-			user_error("Unable to determine what should be displayed. A default route has not been specified in the routing file.");
+			Exceptions::showError("Server Error","Unable to determine what should be displayed. A default route has not been specified in the routing file.");
 			exit;
 		}
 		$this->_initialize();
@@ -100,20 +102,16 @@ class Router extends BaseClass{
 		// Fetch the complete URI string
 		$this->uri->_fetch_uri_string();
 		
-		// Is there a URI string? If not, the default controller specified in the "routes" file will be shown.
-		if ($this->uri->uri_string == ''){
-			return $this->uri->_reindex_segments();
-		}
-
 		// Do we need to remove the URL suffix?
 		$this->uri->_remove_url_suffix();
 
 		// Compile the segments into an array
 		$this->uri->_explode_segments();
-		
+
 		// Set Segments
 		$this->segments = $this->uri->segments;
-		
+
+
 		// Parse any custom routing that may exist
 		$this->_parseRoutes();
 
@@ -136,10 +134,9 @@ class Router extends BaseClass{
 	 * @param	bool
 	 * @return	void
 	 */
-	function _setRequest($segments = array()){
-		$segments = $this->_validate_request($segments);
-		if (count($segments) == 0)
-		{
+	protected function _setRequest($segments = array()){
+		$segments = $this->_validateRequest($segments);
+		if (count($segments) == 0){
 			return $this->uri->_reindex_segments();
 		}
 
@@ -173,11 +170,15 @@ class Router extends BaseClass{
 	 * @param	array
 	 * @return	array
 	 */
-	function _validate_request($segments){
-		if (count($segments) == 0){
-			user_error('No Segments');
-			exit;
+	protected function _validateRequest($segments){
+
+		if(count($segments) == 0){
+			$segments = [
+				$this->getConfig('default_controller'),
+				$this->getConfig('default_method')
+			];
 		}
+		
 		$controller_path = $this->app_path.$this->getConfig('controller_folder').DS;
 
 		// Does the requested controller exist in the root folder?
@@ -186,8 +187,7 @@ class Router extends BaseClass{
 		}
 
 		// Is the controller in a sub-folder?
-		if (is_dir($controller_path.$segments[0]))
-		{
+		if (is_dir($controller_path.$segments[0])){
 			// Set the directory and remove it from the segment array
 			$this->set_directory($segments[0]);
 
@@ -231,10 +231,6 @@ class Router extends BaseClass{
 
 			return $segments;
 		}
-		
-		// Nothing else to do at this point but show a 404
-		Exceptions::Show404('Page Not Found 404');
-		//user_error($segments[0]);
 	}
 
 	// --------------------------------------------------------------------
@@ -253,11 +249,15 @@ class Router extends BaseClass{
 		$routes = $this->getConfig('map');
 		
 		$uri = implode('/',$this->segments);
-		
-		if(isset($routes[$this->uri->segments[0].'->vendor'])){
-			$this->app_path = VENDOR_PATH.$routes[$this->uri->segments[0].'->vendor'].DS;
+		// Is have route to vendor?
+		if(isset($routes['root:vendor'])){
+			$this->app_path = VENDOR_PATH.$routes['root:vendor'];
+		}
+		elseif(isset($routes[current($this->segments).':vendor'])){
+			$this->app_path = VENDOR_PATH.$routes[current($this->segments).':vendor'];
 			array_shift($this->segments);
 		}
+		
 		// Is there a literal match?  If so we're done
 		elseif (isset($routes[$uri])){
 			explode('/', $routes[$uri]);
@@ -265,8 +265,7 @@ class Router extends BaseClass{
 		}
 		
 		// Loop through the route array looking for wild-cards
-		foreach ($routes as $key => $val)
-		{
+		foreach ($routes as $key => $val){
 			// Convert wild-cards to RegEx
 			$key = str_replace(':any', '.+', str_replace(':num', '[0-9]+', $key));
 
@@ -279,9 +278,11 @@ class Router extends BaseClass{
 					$val = preg_replace('#^'.$key.'$#', $val, $uri);
 				}
 
-				return $this->_set_request(explode('/', $val));
+				return $this->_setRequest(explode('/', $val));
 			}
 		}
+
+		
 		// If we got this far it means we didn't encounter a
 		// matching route so we'll set the site default route
 		$this->_setRequest($this->segments);
@@ -312,37 +313,8 @@ class Router extends BaseClass{
 
 	// --------------------------------------------------------------------
 
-	/**
-	 *  Set the controller overrides
-	 *
-	 * @access	public
-	 * @param	array
-	 * @return	null
-	 */
-	function _set_overrides($routing){
-		if ( ! is_array($routing)){
-			return;
-		}
-
-		if (isset($routing['directory'])){
-			$this->set_directory($routing['directory']);
-		}
-
-		if (isset($routing['controller']) AND $routing['controller'] != ''){
-			$this->setClass($routing['controller']);
-		}
-
-		if (isset($routing['function'])){
-			$routing['function'] = ($routing['function'] == '') ? 'index' : $routing['function'];
-			$this->set_method($routing['function']);
-		}
-	}
 	public function getPath(){
+		
 		return $this->app_path.$this->getConfig('controller_folder').DS.$this->directory.$this->class.'.php';
 	}
-
 }
-// END Router Class
-
-/* End of file Router.php */
-/* Location: ./system/core/Router.php */

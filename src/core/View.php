@@ -35,7 +35,7 @@ class View extends BaseClass{
 		$__prop = Loader::getName($_sky_name,'view');
 
 		if(!file_exists($__prop->path)){
-			user_error('View Not Found: '.$__prop->path);
+			Exceptions::showError('Server Error','Missing View File: '.$__prop->path);
 			return;
 		}
 		// extract array to variable
@@ -44,7 +44,7 @@ class View extends BaseClass{
 		ob_start();
 		
 		include $__prop->path;
-		
+
 		$__view = ob_get_contents();
 		
 		ob_end_clean();

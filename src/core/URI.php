@@ -217,7 +217,7 @@ class URI extends BaseClass{
 	 * @param	string
 	 * @return	string
 	 */
-	function _filter_uri($str)
+	private function _filter_uri($str)
 	{
 		if ($str != '' && $this->getConfig('permitted_uri_chars') != '' && $this->getConfig('enable_query_strings') == FALSE)
 		{
@@ -225,7 +225,7 @@ class URI extends BaseClass{
 			// compatibility as many are unaware of how characters in the permitted_uri_chars will be parsed as a regex pattern
 			if ( ! preg_match("|^[".str_replace(array('\\-', '\-'), '-', preg_quote($this->getConfig('permitted_uri_chars'), '-'))."]+$|i", $str))
 			{
-				show_error('The URI you submitted has disallowed characters.', 400);
+				Exceptions::showError('Server Error','The URI you submitted has disallowed characters.');
 			}
 		}
 

@@ -26,7 +26,7 @@ class Output extends BaseClass{
 	
 	public $header = [];
 	
-	public $cache = 0;
+	public $cache;
 	
 	public function __construct(){
 	
@@ -132,14 +132,16 @@ class Output extends BaseClass{
 	* benchmark timer so the page rendering speed and memory usage can be shown.
 	*/
 	public function render(){
-		/**
+
 		if(Config::read('App.Base.enable_cache') and $this->cache !== 0){
+		
 			$title = implode(Loader::getClass('Sky.core.Router')->segments,'.');
+			
 			Loader::getClass('Sky.core.Cache')->setConfig([
 				'cache_expire' => $this->cache
 			])->write($title,$this->final);
 		}
-		**/
+
 		if (count($this->header) > 0)
 		{
 			foreach ($this->header as $header)

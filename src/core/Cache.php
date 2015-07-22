@@ -16,11 +16,16 @@
 namespace Sky\core;
 
 class Cache extends BaseClass{
+
 	public $_config = [
-		'cache_path' => APP_PATH . 'cache' . DS,
+		'cache_path' => 'cache',
 		'cache_expire' => 30
 	];
+	
 	function __construct(){
+	
+		parent::__construct();
+		
 		$path = $this->getConfig('cache_path');
 		
 		$uri = Loader::getClass('Sky.core.Router');
@@ -37,7 +42,7 @@ class Cache extends BaseClass{
 			Exceptions::showError('Server Error','Unable to write Cache Folder');
 		
 		}
-		parent::__construct();
+		
 	}
 	/**
 	* Write or create new cache file
