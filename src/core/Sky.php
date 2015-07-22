@@ -101,6 +101,11 @@ $PATH = $RTR->getPath();
 
 if(!file_exists($PATH)){
 
+<<<<<<< HEAD
+=======
+if(!file_exists($RTR->getPath())){
+
+>>>>>>> origin/master
 	Exceptions::show404();
 
 }
