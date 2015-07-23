@@ -21,7 +21,7 @@ class View extends BaseClass{
 	* temp html string
 	* @var html
 	*/
-	protected static $temp = '';
+	public static $temp = '';
 	/**
 	* Load View File
 	* 

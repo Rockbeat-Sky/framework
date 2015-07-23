@@ -138,3 +138,8 @@ function _camelize($str){
 	$str = ucwords(preg_replace('/[\s_]+/', ' ', $str));
 	return str_replace(' ', '', $str);
 }
+
+function redirect($url = ''){
+	header('Location: '._siteUrl($url));
+	exit;
+}

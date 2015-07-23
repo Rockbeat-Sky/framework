@@ -21,9 +21,9 @@ use Sky\core\Exceptions;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
 
-final DBAL extends BaseClass{
+class DBAL extends BaseClass{
 	
-	protected $db;
+	public $db;
 	
 	function __construct(array $params = [], Configuration $config = null, EventManager $eventManager = null){
 		

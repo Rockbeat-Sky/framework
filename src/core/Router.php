@@ -111,10 +111,7 @@ class Router extends BaseClass{
 		// Set Segments
 		$this->segments = $this->uri->segments;
 
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/master
 		// Parse any custom routing that may exist
 		$this->_parseRoutes();
 
@@ -173,7 +170,6 @@ class Router extends BaseClass{
 	 * @param	array
 	 * @return	array
 	 */
-<<<<<<< HEAD
 	protected function _validateRequest($segments){
 
 		if(count($segments) == 0){
@@ -181,12 +177,6 @@ class Router extends BaseClass{
 				$this->getConfig('default_controller'),
 				$this->getConfig('default_method')
 			];
-=======
-	function _validate_request($segments){
-		if (count($segments) == 0){
-			Exceptions::showError('Server Error','No Segments');
-			exit;
->>>>>>> origin/master
 		}
 		
 		$controller_path = $this->app_path.$this->getConfig('controller_folder').DS;
@@ -259,26 +249,13 @@ class Router extends BaseClass{
 		$routes = $this->getConfig('map');
 		
 		$uri = implode('/',$this->segments);
-<<<<<<< HEAD
 		// Is have route to vendor?
 		if(isset($routes['root:vendor'])){
 			$this->app_path = VENDOR_PATH.$routes['root:vendor'];
 		}
 		elseif(isset($routes[current($this->segments).':vendor'])){
 			$this->app_path = VENDOR_PATH.$routes[current($this->segments).':vendor'];
-=======
-
-		if(isset($routes[$this->uri->segments[0].'->vendor'])){
-			$this->app_path = VENDOR_PATH.$routes[$this->uri->segments[0].'->vendor'].DS;
->>>>>>> origin/master
 			array_shift($this->segments);
-			if(count($this->segments) == 0){
-				$this->segments = [
-					$this->getConfig('default_controller'),
-					$this->getConfig('default_method')
-				];
-			}
-			//return $this->_setRequest($this->segments);
 		}
 		
 		// Is there a literal match?  If so we're done
@@ -308,7 +285,6 @@ class Router extends BaseClass{
 		
 		// If we got this far it means we didn't encounter a
 		// matching route so we'll set the site default route
-
 		$this->_setRequest($this->segments);
 		
 	}

@@ -15,6 +15,7 @@
  */
 namespace Sky\core;
 use Sky\core\Config;
+use Sky\core\Exceptions;
 use Monolog\Handler\HandlerInterface;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -29,13 +30,11 @@ class Log{
 
 		$date = date(Config::read('App.Base.log_split_time'));
 		
-		$path = Config::read('App.Base.log_path').DS;
+		$path = Config::read('App.Base.log_path');
 		
 		if(!is_dir($path)){
 		
-			user_error('Log Folder Not Found');
-			exit;
-			
+			Exceptions::showError('Server Error','Missing Log Folder. to fix this error, create folder at '.$path);
 		}
 		if(is_array($log_file = Config::read('App.Base.log_filename'))){
 			
